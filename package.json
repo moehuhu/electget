@@ -1,6 +1,6 @@
 {
   "name": "@moehuhu/electget",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Electron tools for creating Windows widgets that are fixed to desktop.",
   "main": "dist/cjs/index.js",
   "types": "./dist/types/index.d.ts",
