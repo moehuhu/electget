@@ -12,6 +12,7 @@
 - [Windows] Prevent `BrowserWindow` from being hidden in AeroPeek.
 - [Windows] Prevent changes in the `BrowserWindow` order.
 - [Windows] Move `BrowserWindow` to the bottom of the windows.
+- [Windows] Move `BrowserWindow` to the top of the windows.
 
 ## Install
 
@@ -107,6 +108,25 @@ Cancel of `preventChangeZOrder` method.
 - `win` Buffer|BrowserWindow - Target BrowserWindow object or Buffer returned by getNativeWindowHandle.
 
 Move `BrowserWindow` to the bottom of the windows.
+
+#### [`Windows`] moveToTop(win)
+
+- `win` Buffer|BrowserWindow - Target BrowserWindow object or Buffer returned by getNativeWindowHandle.
+
+Move `BrowserWindow` to the top of the windows.
+
+#### [`Windows`] alwaysOnTop(browserWindow)
+
+- `win` BrowserWindow - Target BrowserWindow object.
+
+`BrowserWindow` is fixed to the top of the windows.
+Apply `moveToTop`, `preventChangeZOrder` at once.
+
+#### [`Windows`] cancelAlwaysOnTop(browserWindow)
+
+- `win` BrowserWindow - Target BrowserWindow object.
+
+Cancel of `alwaysOnTop` method.
 
 ## Guidelines for Using Webpack
 

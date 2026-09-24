@@ -4,6 +4,7 @@ import {
   GWLP_HWNDPARENT,
   HWND,
   HWND_BOTTOM,
+  HWND_TOP,
   SWP_NOMOVE,
   SWP_NOSIZE,
   SWP_NOZORDER,
@@ -133,6 +134,14 @@ export function zOrderToBottom(win: Win) {
   if (!user32) return false;
   const hWnd = getHWnd(win);
   user32.SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+
+  return true;
+}
+
+export function zOrderToTop(win: Win) {
+  if (!user32) return false;
+  const hWnd = getHWnd(win);
+  user32.SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
   return true;
 }
