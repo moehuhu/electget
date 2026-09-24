@@ -1,6 +1,5 @@
 import { BrowserWindow } from 'electron';
 import { WindowsModule } from './windows.js';
-import { MacModule } from './mac.js';
 import { Win } from '../helper.js';
 
 export interface ElectgetModule {
@@ -28,18 +27,13 @@ export class Electget {
   constructor() {
     this.platform = process.platform;
 
-    switch (this.platform) {
-      case 'win32':
-        this.module = new WindowsModule();
-        break;
-      case 'darwin':
-        this.module = new MacModule();
-        break;
-      default:
-        throw new Error(
-          `This module is not currently supported by OS: ${this.platform}`
-        );
+    if (this.platform !== 'win32') {
+      throw new Error(
+        `This module is not currently supported by OS: ${this.platform}`
+      );
     }
+
+    this.module = new WindowsModule();
   }
 
   preventFromAeroPeek(win: Win) {

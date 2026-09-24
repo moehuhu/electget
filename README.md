@@ -7,7 +7,7 @@
 
 `Electron` tools for creating Windows widgets that are fixed to desktop. This package provides features for widget creation of your Electron application.
 
-- [Windows, macOS] Prevent `BrowserWindow` from being hidden in ShowDesktop.
+- [Windows] Prevent `BrowserWindow` from being hidden in ShowDesktop.
 - [Windows] Prevent `BrowserWindow` from being minimized.
 - [Windows] Prevent `BrowserWindow` from being hidden in AeroPeek.
 - [Windows] Prevent changes in the `BrowserWindow` order.
@@ -15,7 +15,7 @@
 
 ## Install
 
-This package uses [`koffi`](https://koffi.dev) on Windows, which ships prebuilt binaries for Node.js and Electron. On macOS it uses `nswindow-napi`, which is compiled at install time, so you need the Xcode Command Line Tools.
+This package uses [`koffi`](https://koffi.dev), which ships prebuilt binaries for Node.js and Electron.
 
 ```
 npm i @moehuhu/electget
@@ -40,7 +40,7 @@ function createWindow() {
   // [Windows] Prevent BrowserWindow from being hidden in AeroPeek.
   electget.preventFromAeroPeek(win);
 
-  // [Windows, macOS] Prevent BrowserWindow from being hidden in ShowDesktop.
+  // [Windows] Prevent BrowserWindow from being hidden in ShowDesktop.
   electget.preventFromShowDesktop(win);
 
   // [Windows] Prevent changes in the BrowserWindow order.
@@ -74,13 +74,13 @@ Cancel of `alwaysOnBottom` method.
 
 Prevent `BrowserWindow` from being hidden in AeroPeek.
 
-#### [`Windows`, `macOS`] preventFromShowDesktop(win)
+#### [`Windows`] preventFromShowDesktop(win)
 
 - `win` Buffer|BrowserWindow - Target BrowserWindow object or Buffer returned by getNativeWindowHandle.
 
 Prevent `BrowserWindow` from being hidden in ShowDesktop and minimized.
 
-#### [`Windows`, `macOS`] cancelPreventFromShowDesktop(win)
+#### [`Windows`] cancelPreventFromShowDesktop(win)
 
 - `win` Buffer|BrowserWindow - Target BrowserWindow object or Buffer returned by getNativeWindowHandle.
 
@@ -127,5 +127,4 @@ module.exports = {
 ## Roadmap
 
 - [ ] Method failure check.
-- [x] Add MacOS support.
 - [ ] Add test code.

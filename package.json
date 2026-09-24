@@ -20,7 +20,8 @@
     "provenance": true
   },
   "scripts": {
-    "build": "tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json && node -e \"require('fs').writeFileSync('dist/esm/package.json', JSON.stringify({ type: 'module' }))\"",
+    "clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\"",
+    "build": "npm run clean && tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json && node -e \"require('fs').writeFileSync('dist/esm/package.json', JSON.stringify({ type: 'module' }))\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublishOnly": "npm run build"
   },
@@ -31,7 +32,6 @@
     "prevent aeropeek",
     "widget",
     "windows",
-    "macOS",
     "koffi"
   ],
   "homepage": "https://github.com/moehuhu/electget",
@@ -44,8 +44,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "koffi": "^3.3.1",
-    "nswindow-napi": "0.0.3"
+    "koffi": "^3.3.1"
   },
   "devDependencies": {
     "@types/node": "^22.20.4",
