@@ -1,15 +1,15 @@
 import { BrowserWindow } from 'electron';
-import ref from 'ref-napi';
-import { ElectgetModule } from '.';
-import { SWP_NOZORDER, WINDOWPOS, WM_WINDOWPOSCHANGING } from '../constants';
+import { ElectgetModule } from './index.js';
+import { WM_WINDOWPOSCHANGING } from '../constants.js';
 import {
   getDesktopWindow,
   getSHELLDLL_DefViewHandle,
+  ignoreChangeZOrder,
   preventFromAeroPeek,
   setOwnerWindow,
   zOrderToBottom,
-} from '../ffi/windows';
-import { Win } from '../helper';
+} from '../ffi/windows.js';
+import { Win } from '../helper.js';
 
 export class WindowsModule implements ElectgetModule {
   preventFromAeroPeek(win: Win) {
@@ -25,16 +25,7 @@ export class WindowsModule implements ElectgetModule {
   }
 
   preventChangeZOrder(browserWindow: BrowserWindow) {
-    browserWindow.hookWindowMessage(WM_WINDOWPOSCHANGING, (wParam, lParam) => {
-      const buf = Buffer.alloc(8);
-      buf.type = ref.refType(WINDOWPOS);
-      lParam.copy(buf);
-      const actualStructDataBuffer = buf.deref();
-      const windowPos = actualStructDataBuffer.deref();
-
-      const newFlags = windowPos.flags | SWP_NOZORDER;
-      actualStructDataBuffer.writeUInt32LE(newFlags, 6);
-    });
+    browserWindow.hookWindowMessage(WM_WINDOWPOSCHANGING, ignoreChangeZOrder);
 
     return () => this.cancelPreventChangeZOrder(browserWindow);
   }

@@ -5,15 +5,18 @@
   "main": "dist/cjs/index.js",
   "types": "./dist/types/index.d.ts",
   "exports": {
-    "import": "./dist/esm/index.js",
-    "require": "./dist/cjs/index.js",
-    "default": "./dist/cjs/index.js"
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/cjs/index.js"
+    }
   },
   "files": [
     "dist/**/*"
   ],
   "scripts": {
-    "build": "tsc --project tsconfig.esm.json & tsc --project tsconfig.cjs.json",
+    "build": "tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json && node -e \"require('fs').writeFileSync('dist/esm/package.json', JSON.stringify({ type: 'module' }))\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -24,7 +27,7 @@
     "widget",
     "windows",
     "macOS",
-    "ffi-napi"
+    "koffi"
   ],
   "homepage": "https://github.com/lowfront/electget",
   "bugs": {
@@ -36,15 +39,15 @@
   },
   "license": "MIT",
   "dependencies": {
-    "ffi-napi": "4.0.3",
-    "nswindow-napi": "0.0.3",
-    "ref-napi": "3.0.3",
-    "ref-struct-di": "1.1.1"
+    "koffi": "^3.3.1",
+    "nswindow-napi": "0.0.3"
   },
   "devDependencies": {
-    "@types/electron": "1.6.10",
-    "@types/ffi-napi": "4.0.5",
-    "@types/ref-napi": "3.0.4",
-    "@types/ref-struct-di": "1.1.6"
+    "@types/node": "^22.20.4",
+    "electron": "^44.4.5",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "electron": ">=12"
   }
 }

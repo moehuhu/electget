@@ -1,7 +1,4 @@
-import ref from 'ref-napi';
-import di from 'ref-struct-di';
-
-const StructType = di(ref);
+import koffi from 'koffi';
 
 export const SWP_NOZORDER = 4;
 export const SWP_NOMOVE = 2;
@@ -14,12 +11,17 @@ export const DWMWA_EXCLUDED_FROM_PEEK = 12;
 
 export const GWLP_HWNDPARENT = -8;
 
-export const WINDOWPOS = StructType({
-  hwnd: ref.types.int32,
-  hwndInsertAfter: ref.types.int32,
-  x: ref.types.int32,
-  y: ref.types.int32,
-  cx: ref.types.int32,
-  cy: ref.types.int32,
-  flags: ref.types.uint32,
+// Window handles are pointer-sized; pass them around as integers.
+// Types stay anonymous: koffi registers named types globally, so a name would
+// clash with other koffi users or with the CJS and ESM builds loaded together.
+export const HWND = 'intptr_t';
+
+export const WINDOWPOS = koffi.struct({
+  hwnd: HWND,
+  hwndInsertAfter: HWND,
+  x: 'int',
+  y: 'int',
+  cx: 'int',
+  cy: 'int',
+  flags: 'uint32_t',
 });

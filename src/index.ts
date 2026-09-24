@@ -1,4 +1,4 @@
-import { Electget } from './electget';
+import { Electget } from './electget/index.js';
 
 const electget = new Electget();
 

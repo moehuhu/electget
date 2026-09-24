@@ -15,7 +15,7 @@
 
 ## Install
 
-This package uses `ffi-napi`, so you must meet the [ffi-napi requirements](https://github.com/node-ffi-napi/node-ffi-napi#installation) before installation.
+This package uses [`koffi`](https://koffi.dev) on Windows, which ships prebuilt binaries for Node.js and Electron. On macOS it uses `nswindow-napi`, which is compiled at install time, so you need the Xcode Command Line Tools.
 
 ```
 npm i electget

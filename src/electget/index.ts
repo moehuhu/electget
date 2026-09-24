@@ -1,7 +1,7 @@
 import { BrowserWindow } from 'electron';
-import { WindowsModule } from './windows';
-import { MacModule } from './mac';
-import { Win } from '../helper';
+import { WindowsModule } from './windows.js';
+import { MacModule } from './mac.js';
+import { Win } from '../helper.js';
 
 export interface ElectgetModule {
   preventFromAeroPeek(win: Win): boolean;

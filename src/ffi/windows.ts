@@ -1,80 +1,82 @@
-import ffi from 'ffi-napi';
-import ref from 'ref-napi';
+import koffi from 'koffi';
 import {
   DWMWA_EXCLUDED_FROM_PEEK,
   GWLP_HWNDPARENT,
+  HWND,
   HWND_BOTTOM,
   SWP_NOMOVE,
   SWP_NOSIZE,
   SWP_NOZORDER,
   WINDOWPOS,
-} from '../constants';
-import { BrowserWindow } from 'electron';
-import { getHWnd } from '../helper';
-import { Win } from '../helper';
+} from '../constants.js';
+import { getHWnd } from '../helper.js';
+import { Win } from '../helper.js';
 
 export const isWindows = process.platform === 'win32';
 
-export const user32 = isWindows
-  ? new ffi.Library('user32', {
-      FindWindowExA: ['ulong', ['ulong', 'ulong', 'string', 'ulong']],
-      GetDesktopWindow: ['ulong', []],
-      SetWindowLongPtrA: ['ulong', ['int', 'int', 'int']],
-      SetWindowPos: [
-        'bool',
-        ['ulong', 'ulong', 'int', 'int', 'int', 'int', 'uint'],
-      ],
-      SetParent: ['ulong', ['ulong', 'ulong']],
-    })
-  : null;
+function loadUser32() {
+  const lib = koffi.load('user32.dll');
+  // SetWindowLongPtrA is only exported on 64-bit Windows; on 32-bit it is a
+  // macro for SetWindowLongA.
+  const setWindowLongPtr =
+    process.arch === 'ia32' ? 'SetWindowLongA' : 'SetWindowLongPtrA';
+  return {
+    FindWindowExA: lib.func('__stdcall', 'FindWindowExA', HWND, [
+      HWND,
+      HWND,
+      'str',
+      'str',
+    ]),
+    GetDesktopWindow: lib.func('__stdcall', 'GetDesktopWindow', HWND, []),
+    SetWindowLongPtrA: lib.func('__stdcall', setWindowLongPtr, 'intptr_t', [
+      HWND,
+      'int',
+      'intptr_t',
+    ]),
+    SetWindowPos: lib.func('__stdcall', 'SetWindowPos', 'bool', [
+      HWND,
+      HWND,
+      'int',
+      'int',
+      'int',
+      'int',
+      'uint',
+    ]),
+    SetParent: lib.func('__stdcall', 'SetParent', HWND, [HWND, HWND]),
+  };
+}
 
-export const dwmapi = isWindows
-  ? new ffi.Library('dwmapi.dll', {
-      DwmSetWindowAttribute: ['ulong', ['long', 'ulong', 'bool*', 'ulong']],
-    })
-  : null;
+function loadDwmapi() {
+  const lib = koffi.load('dwmapi.dll');
+  return {
+    DwmSetWindowAttribute: lib.func(
+      '__stdcall',
+      'DwmSetWindowAttribute',
+      'long',
+      [HWND, 'uint32_t', 'void *', 'uint32_t']
+    ),
+  };
+}
 
-export const kernel32 = isWindows
-  ? new ffi.Library('kernel32.dll', {
-      GetLastError: ['ulong', []],
-    })
-  : null;
+export const user32 = isWindows ? loadUser32() : null;
+
+export const dwmapi = isWindows ? loadDwmapi() : null;
 
 export function getDesktopWindow() {
   return user32?.GetDesktopWindow() as number;
 }
 
 export function getSHELLDLL_DefViewHandle() {
-  const progman = user32?.FindWindowExA(
-    ref.NULL as any,
-    ref.NULL as any,
-    'Progman',
-    ref.NULL as any
-  ) as number;
-  let defView = user32?.FindWindowExA(
-    progman,
-    ref.NULL as any,
-    'SHELLDLL_DefView',
-    ref.NULL as any
-  );
+  const progman = user32?.FindWindowExA(0, 0, 'Progman', null) as number;
+  let defView = user32?.FindWindowExA(progman, 0, 'SHELLDLL_DefView', null);
 
   if (!defView) {
     // find again
     const desktopHWnd = user32?.GetDesktopWindow() as number;
     let workerW = 0;
     do {
-      workerW = user32?.FindWindowExA(
-        desktopHWnd,
-        workerW,
-        'WorkerW',
-        ref.NULL as any
-      ) as any;
-      defView = user32?.FindWindowExA(
-        workerW,
-        ref.NULL as any,
-        'SHELLDLL_DefView',
-        ref.NULL as any
-      );
+      workerW = user32?.FindWindowExA(desktopHWnd, workerW, 'WorkerW', null);
+      defView = user32?.FindWindowExA(workerW, 0, 'SHELLDLL_DefView', null);
     } while (!defView && workerW);
   }
 
@@ -98,26 +100,31 @@ export function setParentWindow(win: Win, target: Win) {
   user32?.SetParent(hWnd, targetWnd);
 }
 
+// lParam of WM_WINDOWPOSCHANGING holds a pointer to a WINDOWPOS struct.
 export function ignoreChangeZOrder(wParam: Buffer, lParam: Buffer) {
-  const buf = Buffer.alloc(8);
-  buf.type = ref.refType(WINDOWPOS);
-  lParam.copy(buf);
-  const actualStructDataBuffer = buf.deref();
-  const windowPos = actualStructDataBuffer.deref();
+  const windowPosPtr = koffi.decode(lParam, 'void *');
+  if (!windowPosPtr) return;
+  const windowPos = koffi.decode(windowPosPtr, WINDOWPOS);
 
-  const newFlags = windowPos.flags | SWP_NOZORDER;
-  actualStructDataBuffer.writeUInt32LE(newFlags, 6);
+  koffi.encode(
+    windowPosPtr,
+    koffi.offsetof(WINDOWPOS, 'flags'),
+    'uint32_t',
+    windowPos.flags | SWP_NOZORDER
+  );
 }
 
 export function preventFromAeroPeek(win: Win) {
   if (!dwmapi) return false;
   const hWnd = getHWnd(win);
-  const bool = ref.alloc('bool', true);
+  // DWMWA_EXCLUDED_FROM_PEEK expects a Win32 BOOL (4 bytes).
+  const value = Buffer.alloc(4);
+  value.writeInt32LE(1);
   dwmapi.DwmSetWindowAttribute(
     hWnd,
     DWMWA_EXCLUDED_FROM_PEEK,
-    bool.ref(),
-    ref.sizeof.int32
+    value,
+    value.length
   );
   return true;
 }

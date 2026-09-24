@@ -4,9 +4,9 @@ import {
   GetNSWindowCollectionBehaviorDefault,
   GetNSWindowCollectionBehaviorCanJoinAllSpaces,
   GetNSWindowCollectionBehaviorStationary,
-} from '../ffi/mac';
-import { ElectgetModule } from '.';
-import { Win } from '../helper';
+} from '../ffi/mac.js';
+import { ElectgetModule } from './index.js';
+import { Win } from '../helper.js';
 
 export class MacModule implements ElectgetModule {
   preventFromAeroPeek(win: Win) {
