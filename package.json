@@ -1,5 +1,5 @@
 {
-  "name": "electget",
+  "name": "@moehuhu/electget",
   "version": "0.1.2",
   "description": "Electron tools for creating Windows widgets that are fixed to desktop.",
   "main": "dist/cjs/index.js",
@@ -15,9 +15,14 @@
   "files": [
     "dist/**/*"
   ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "scripts": {
     "build": "tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json && node -e \"require('fs').writeFileSync('dist/esm/package.json', JSON.stringify({ type: 'module' }))\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "electron",
@@ -29,9 +34,9 @@
     "macOS",
     "koffi"
   ],
-  "homepage": "https://github.com/lowfront/electget",
+  "homepage": "https://github.com/moehuhu/electget",
   "bugs": {
-    "url": "https://github.com/lowfront/electget/issues"
+    "url": "https://github.com/moehuhu/electget/issues"
   },
   "author": {
     "name": "lowfront",
@@ -49,5 +54,9 @@
   },
   "peerDependencies": {
     "electron": ">=12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moehuhu/electget.git"
   }
 }

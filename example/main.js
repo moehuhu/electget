@@ -1,6 +1,6 @@
 const {app, BrowserWindow} = require('electron')
 const path = require('path')
-const {default: electget} = require('electget')
+const {default: electget} = require('@moehuhu/electget')
 
 function createWindow () {
   const mainWindow = new BrowserWindow({

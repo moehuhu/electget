@@ -1,7 +1,7 @@
 # Electget
 <br>
 <div align="center">
-  <img alt="electget" src="https://raw.githubusercontent.com/lowfront/electget/master/logo.svg" height="170px" />
+  <img alt="electget" src="https://raw.githubusercontent.com/moehuhu/electget/master/logo.svg" height="170px" />
 </div>
 <br>
 
@@ -18,7 +18,7 @@
 This package uses [`koffi`](https://koffi.dev) on Windows, which ships prebuilt binaries for Node.js and Electron. On macOS it uses `nswindow-napi`, which is compiled at install time, so you need the Xcode Command Line Tools.
 
 ```
-npm i electget
+npm i @moehuhu/electget
 ```
 
 ## Usage
@@ -26,7 +26,7 @@ npm i electget
 Electget is available in the Electron main process.
 
 ```js
-import electget from 'electget';
+import electget from '@moehuhu/electget';
 
 function createWindow() {
   const win = new BrowserWindow({
