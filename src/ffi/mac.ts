@@ -1,18 +1,13 @@
 import { BrowserWindow } from 'electron';
-import * as nswindowNamespace from 'nswindow-napi';
+import { loadNSWindow } from './nswindow.cjs';
 import { Win } from '../helper.js';
 
-// nswindow-napi is a CommonJS native addon; under ESM its functions are only
-// reachable through the default export.
-const nswindow = ((nswindowNamespace as any).default ??
-  nswindowNamespace) as typeof nswindowNamespace;
-
 export const GetNSWindowCollectionBehaviorDefault = () =>
-  nswindow.GetNSWindowCollectionBehaviorDefault();
+  loadNSWindow().GetNSWindowCollectionBehaviorDefault();
 export const GetNSWindowCollectionBehaviorCanJoinAllSpaces = () =>
-  nswindow.GetNSWindowCollectionBehaviorCanJoinAllSpaces();
+  loadNSWindow().GetNSWindowCollectionBehaviorCanJoinAllSpaces();
 export const GetNSWindowCollectionBehaviorStationary = () =>
-  nswindow.GetNSWindowCollectionBehaviorStationary();
+  loadNSWindow().GetNSWindowCollectionBehaviorStationary();
 
 export function SetCollectionBehavior(win: Win, value: number) {
   let handle: Buffer;
@@ -21,5 +16,5 @@ export function SetCollectionBehavior(win: Win, value: number) {
   } else {
     handle = win;
   }
-  nswindow.SetCollectionBehavior(handle, value);
+  loadNSWindow().SetCollectionBehavior(handle, value);
 }
