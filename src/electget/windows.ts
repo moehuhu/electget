@@ -8,7 +8,6 @@ import {
   preventFromAeroPeek,
   setOwnerWindow,
   zOrderToBottom,
-  zOrderToTop,
 } from '../ffi/windows.js';
 import { Win } from '../helper.js';
 
@@ -39,10 +38,6 @@ export class WindowsModule implements ElectgetModule {
     return zOrderToBottom(win);
   }
 
-  moveToTop(win: Win) {
-    return zOrderToTop(win);
-  }
-
   alwaysOnBottom(browserWindow: BrowserWindow) {
     const hWnd = browserWindow.getNativeWindowHandle();
     this.moveToBottom(hWnd);
@@ -54,15 +49,5 @@ export class WindowsModule implements ElectgetModule {
     const hWnd = browserWindow.getNativeWindowHandle();
     browserWindow.unhookWindowMessage(WM_WINDOWPOSCHANGING);
     this.cancelPreventFromShowDesktop(hWnd);
-  }
-
-  alwaysOnTop(browserWindow: BrowserWindow) {
-    const hWnd = browserWindow.getNativeWindowHandle();
-    this.moveToTop(hWnd);
-    this.preventChangeZOrder(browserWindow);
-  }
-
-  cancelAlwaysOnTop(browserWindow: BrowserWindow) {
-    browserWindow.unhookWindowMessage(WM_WINDOWPOSCHANGING);
   }
 }

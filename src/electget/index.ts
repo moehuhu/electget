@@ -15,15 +15,9 @@ export interface ElectgetModule {
 
   moveToBottom(win: Win): boolean;
 
-  moveToTop(win: Win): boolean;
-
   alwaysOnBottom(browserWindow: BrowserWindow): void;
 
   cancelAlwaysOnBottom(browserWindow: BrowserWindow): void;
-
-  alwaysOnTop(browserWindow: BrowserWindow): void;
-
-  cancelAlwaysOnTop(browserWindow: BrowserWindow): void;
 }
 
 export class Electget {
@@ -66,23 +60,11 @@ export class Electget {
     return this.module?.moveToBottom(win);
   }
 
-  moveToTop(win: Win) {
-    return this.module?.moveToTop(win);
-  }
-
   alwaysOnBottom(browserWindow: BrowserWindow) {
     return this.module?.alwaysOnBottom(browserWindow);
   }
 
   cancelAlwaysOnBottom(browserWindow: BrowserWindow) {
     return this.module?.cancelAlwaysOnBottom(browserWindow);
-  }
-
-  alwaysOnTop(browserWindow: BrowserWindow) {
-    return this.module?.alwaysOnTop(browserWindow);
-  }
-
-  cancelAlwaysOnTop(browserWindow: BrowserWindow) {
-    return this.module?.cancelAlwaysOnTop(browserWindow);
   }
 }

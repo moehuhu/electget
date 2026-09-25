@@ -4,7 +4,6 @@ export const SWP_NOZORDER = 4;
 export const SWP_NOMOVE = 2;
 export const SWP_NOSIZE = 1;
 
-export const HWND_TOP = 0;
 export const HWND_BOTTOM = 1;
 export const WM_WINDOWPOSCHANGING = 70;
 
